@@ -1,18 +1,49 @@
-version: '2'
-services:
-  db:
-    build: ./db
-    volumes:
-      - ./db/mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: 'password'
-  web:
-      build: ./web
-      ports:
-        - '8080:80'                  
-      volumes:
-        - ./html:/var/www/html       
-      depends_on:
-        - db
+version: '3.7'
 
+services:
+  web:
+    container_name: docker_devenv
+    build: ./docker
+    ports:
+      - 8321:80
+    privileged: true
+    volumes:
+      - ./public_html:/var/www/html
+      
+  # mariaDB
+  db:
+    image: mysql:5.7
+    container_name: db-host_public_html
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: database
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/sql:/docker-entrypoint-initdb.d
+    ports:
+      - 3326:3306
+
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=db-host_public_html
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    ports:
+      - "8322:80"
+    volumes:
+      - ./docker/phpmyadmin/phpmyadmin-misc.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini      
+
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - 8323:8025
 
