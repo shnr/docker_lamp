@@ -3,16 +3,25 @@ FROM php:7.4-apache
 COPY ./php/php.ini /usr/local/etc/php/
 COPY ./apache/*.conf /etc/apache2/sites-enabled/
 
-RUN apt-get update \
-  && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev libwebp-dev \
-  && docker-php-ext-configure gd \
-    --with-freetype-dir=/usr/include/ \
-    --with-jpeg-dir=/usr/include/ \
-    --with-webp-dir=/usr/include/ \
-  && docker-php-ext-install pdo_mysql mysqli mbstring gd iconv \
-  && apt-get -y install libzip-dev \
-  && apt-get install -y zlib1g-dev \
-  && docker-php-ext-install zip
+RUN apt-get update
+RUN apt-get install -y wget libjpeg-dev libfreetype6-dev
+RUN apt-get install -y libmagick++-dev \
+  libmagickwand-dev \
+  libpq-dev \
+  libfreetype6-dev \
+  libjpeg62-turbo-dev \
+  libpng-dev \
+  libwebp-dev \
+  libxpm-dev
+
+RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
+RUN docker-php-ext-install -j$(nproc) gd
+
+RUN docker-php-ext-install pdo_mysql mysqli gd iconv
+RUN apt-get install -y libonig-dev
+RUN apt-get install -y libzip-dev
+RUN apt-get install -y zlib1g-dev
+RUN docker-php-ext-install zip
 
   # && apt-get -y install libzip-dev \
   # && apt-get install -y zlib1g-dev \  
