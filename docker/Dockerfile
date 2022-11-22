@@ -14,17 +14,16 @@ RUN apt-get install -y libmagick++-dev \
   libwebp-dev \
   libxpm-dev
 
-RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
-RUN docker-php-ext-install -j$(nproc) gd
-
-RUN docker-php-ext-install pdo_mysql mysqli gd iconv
+RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
+RUN docker-php-ext-install gd
+RUN docker-php-ext-install pdo_mysql mysqli iconv
 RUN apt-get install -y libonig-dev
 RUN apt-get install -y libzip-dev
 RUN apt-get install -y zlib1g-dev
 RUN docker-php-ext-install zip
 
   # && apt-get -y install libzip-dev \
-  # && apt-get install -y zlib1g-dev \  
+  # && apt-get install -y zlib1g-dev \
   # && pdo_mysql mysqli mbstring gd iconv \
   # && apt-get install gcc \
   # && apt-get install imagemagick \
