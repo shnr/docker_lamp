@@ -15,27 +15,15 @@ RUN apt-get install -y libmagick++-dev \
   libxpm-dev
 
 RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
-RUN docker-php-ext-install -j$(nproc) gd exif
+RUN docker-php-ext-install -j$(nproc) gd  exif
 RUN docker-php-ext-install pdo_mysql mysqli iconv
 RUN apt-get install -y libonig-dev
 RUN apt-get install -y libzip-dev
 RUN apt-get install -y zlib1g-dev
 RUN docker-php-ext-install zip
 
-  # && apt-get -y install libzip-dev \
-  # && apt-get install -y zlib1g-dev \
-  # && pdo_mysql mysqli mbstring gd iconv \
-  # && apt-get install gcc \
-  # && apt-get install imagemagick \
-
-RUN apt-get update \
-  && apt-get install -y libmagickwand-dev  \
-  && pecl install imagick \
-  && docker-php-ext-enable imagick
-
-# RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
-# RUN docker-php-ext-install -j$(nproc) gd
-
+RUN pecl install imagick
+RUN docker-php-ext-enable imagick
 
 # mod_rewriteを 有効に
 RUN /bin/sh -c a2enmod rewrite
