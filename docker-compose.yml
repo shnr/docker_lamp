@@ -5,11 +5,11 @@ services:
     container_name: docker_devenv
     build: ./docker
     ports:
-      - 8521:80
+      - 8080:80
     privileged: true
     volumes:
       - ./public_html:/var/www/html
-      
+
   # mariaDB
   db:
     image: mysql:5.7
@@ -26,7 +26,7 @@ services:
       - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./docker/db/sql:/docker-entrypoint-initdb.d
     ports:
-      - 3526:3306
+      - 3306:3306
 
   phpmyadmin:
     depends_on:
@@ -38,12 +38,12 @@ services:
       - PMA_USER=root
       - PMA_PASSWORD=root
     ports:
-      - "8522:80"
+      - "8082:80"
     volumes:
-      - ./docker/phpmyadmin/phpmyadmin-misc.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini      
+      - ./docker/phpmyadmin/phpmyadmin-misc.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini
 
   mail:
     image: mailhog/mailhog
     ports:
-      - 8523:8025
+      - 8081:8025
 
